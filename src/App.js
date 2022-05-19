@@ -1,25 +1,51 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import Select from "react-select";
+import axios from "axios";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+export default class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectOptions: [],
+      id: "",
+      name: "",
+    };
+  }
+
+  async getOptions() {
+    const res = await axios.get("https://jsonplaceholder.typicode.com/users");
+    const data = res.data;
+
+    const options = data.map((d) => ({
+      value: d.id,
+      label: d.name,
+    }));
+
+    this.setState({ selectOptions: options });
+  }
+
+  handleChange(e) {
+    console.log(e);
+    this.setState({ id: e.value, name: e.label });
+  }
+
+  componentDidMount() {
+    this.getOptions();
+  }
+
+  render() {
+    console.log(this.state.selectOptions);
+    return (
+      <div>
+        <Select
+          options={this.state.selectOptions}
+          onChange={this.handleChange.bind(this)}
+        />
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+          You have selected <strong>{this.state.name}</strong> whose id is{" "}
+          <strong>{this.state.id}</strong>
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+      </div>
+    );
+  }
 }
-
-export default App;
