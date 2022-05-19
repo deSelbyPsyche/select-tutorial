@@ -13,8 +13,8 @@ export default class App extends Component {
   }
 
   async getOptions() {
-    const res = await axios.get("https://jsonplaceholder.typicode.com/users");
-    const data = res.data;
+    const res = await fetch("https://jsonplaceholder.typicode.com/users");
+    const data = await res.json();
 
     const options = data.map((d) => ({
       value: d.id,
